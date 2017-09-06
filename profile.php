@@ -68,11 +68,40 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
          <hr>
          <p style="text-align: center;"><?php echo $bloggerName ?></p>
          <?php 
-						if($bloggerName!=$userName)
-							echo " <p style='text-align: center;' class='followParent'>$followButton</p>"
-		?>
+            if($userName==$admin && $bloggerName!=$userName){
+              $blockStatus=mysqli_fetch_assoc(mysqli_query($con,"SELECT `block` FROM `users` WHERE `userName`='$bloggerName'"));
+              $blockStatus=$blockStatus['block'];
+              if($blockStatus==0)
+              {
+                echo " <p style='text-align: center;' class='blockparent'><button class='w3-button w3-theme-d1 w3-margin-bottom buttons' type='button' onclick='blockUser(\"$bloggerName\")' >Block</button></p>";
+              }
+              else
+              {
+                echo " <p style='text-align: center;' class='blockparent'><button class='w3-button w3-theme-d1 w3-margin-bottom buttons' type='button' onclick='blockUser(\"$bloggerName\")'>UnBlock</button></p>";
+              }
+            }
+						if($bloggerName!=$userName && $bloggerName!=$admin && $userName!=$admin)
+							echo " <p style='text-align: center;' class='followParent'>$followButton</p>";
+		      ?>
 		 <p style="text-align: center;"><?php echo "<span class='userMail'>$mail</span>" ?></p>
-		 <div style="text-align: center;margin: auto;border: 2px solid">
+     <?php
+        if($admin!=$bloggerName)
+        echo " <div style='text-align:center; margin:auto; border: 2px solid;'>
+              <table style='margin:auto; text-align: center;' cellspacing='10'>
+              <tr class='postCountTitle'>
+              <td >Followers</td>
+              <td >Following</td>
+              <td>&nbsp;&nbsp;Posts&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+              <tr class='postCounts'>
+              <td class='followerPanel' >$totalFollowers</td>
+              <td class='followingPanel' >$totalFollowing</td>
+              <td>$totalPosts</td>
+              </tr> 
+              </table>
+              </div>";  
+     ?>
+		 <!-- <div style="text-align: center; margin:auto; border: 2px solid">
 		 <table style="margin:auto;" cellspacing="10">
 		 <tr class="postCountTitle">
 					<td >Followers</td>
@@ -85,7 +114,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 					<td><?php echo $totalPosts; ?></td>
 				</tr>	
 		 </table>
-		 </div>
+		 </div> -->
          </div>
          <br>
       </div>

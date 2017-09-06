@@ -10,6 +10,15 @@
 	$locationProfilePic=$location.$propic;
 		
 	mysqli_query($con,"INSERT INTO `comments` VALUES ('$blogid','$loggedUser','$comment',NULL) ");
+		$blogger=mysqli_fetch_assoc(mysqli_query($con,"SELECT `blogger` FROM `blogs` WHERE `id`='$blogid'"));
+		$blogger=$blogger['blogger'];
+		if($blogger!=$loggedUser)
+		{
+			$notificationText="$loggedUser commented on your Blog...\"$comment\"";
+			mysqli_query($con,"INSERT INTO `notifications` (`notify`,`notifier`,`id`,`notification`) VALUES ('$blogger','$loggedUser','$blogid','$notificationText')");
+		}
+			
+
 		echo "
 			<hr>
             <div class='w3-col w3-padding' style='width:60px;'><img src='$locationProfilePic' class='w3-square' style='height:45px;width:45px' align='middle' alt='Avatar'></img>

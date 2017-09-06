@@ -1,3 +1,32 @@
+function markread(notid)
+{
+
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+	if (this.readyState == 4 && this.status == 200) {
+		// var atag=event.target;
+		// atag.className+=' w3-hide';
+		//document.getElementById('notiSymbolParent').innerHTML=this.responseText;
+	}
+	};
+	xhttp.open("GET", "ajax/markRead.php?notid="+notid, true);
+	xhttp.send();
+}
+
+function blockUser(bloggerName)
+{
+	parent=event.target.parentElement;
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+	if (this.readyState == 4 && this.status == 200) {
+		parent.innerHTML=this.responseText;
+		//var resp=this.responseText;
+		//document.getElementsByClassName('blockParent')[0].innerHTML=resp;
+	}
+	};
+	xhttp.open("GET", "ajax/blockUser.php?bloggerName="+bloggerName, true);
+	xhttp.send();
+}
 
 function deletePost(blogid)
 {
@@ -52,6 +81,7 @@ function followUser(bloggerName,userName)
 	xhttp.open("GET", "ajax/follow.php?bloggerName="+bloggerName+"&userName="+userName, true);
 	xhttp.send();
 }
+
 function commentsin(blogid){
 	var child=event.target;
 	var parent=child.parentElement.parentElement;

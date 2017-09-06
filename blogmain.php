@@ -4,12 +4,14 @@ include_once('dbcon.php');
 if (!isset($_SESSION['login'])) {
   header('location:index.php');
 }
-
+$userName=$_SESSION['login'];
 $blockStatus=mysqli_fetch_assoc(mysqli_query($con,"SELECT `block` FROM `users` WHERE `userName`='$userName'"));
 $blockStatus=$blockStatus['block'];
+
 if($blockStatus==1)
 {
-  $blockMessage="<span style='color:red;'>You are blocked by $admin for posting your blogs.<span>";
+  $blockMessage="<span style='color:red;'>You are blocked by $admin for posting blogs.<span>";
+  echo "block status is $blockStatus";
 }
 
 $userName=$_SESSION['login'];
@@ -91,20 +93,24 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
          <p style="text-align: center;"><?php echo $userName ?></p>
         
      <p style="text-align: center;"><?php echo "<span class='userMail'>$mail</span>" ?></p>
-     <div style="text-align: center;margin: auto;border: 2px solid">
-     <table style="margin:auto;" cellspacing="10">
-     <tr class="postCountTitle">
-          <td >Followers</td>
-          <td >Following</td>
-          <td>&nbsp;&nbsp;Posts&nbsp;&nbsp;&nbsp;</td>
-        </tr>
-        <tr class="postCounts">
-          <td class="followerPanel" ><?php echo $totalFollowers; ?></td>
-          <td class="followingPanel" ><?php echo $totalFollowing; ?></td>
-          <td><?php echo $totalPosts; ?></td>
-        </tr> 
-     </table>
-     </div>
+     <?php
+        if($admin!=$userName)
+        echo " <div style='text-align:center; margin:auto; border: 2px solid;'>
+              <table style='margin:auto; text-align: center;' cellspacing='10'>
+              <tr class='postCountTitle'>
+              <td >Followers</td>
+              <td >Following</td>
+              <td>&nbsp;&nbsp;Posts&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+              <tr class='postCounts'>
+              <td class='followerPanel' >$totalFollowers</td>
+              <td class='followingPanel' >$totalFollowing</td>
+              <td>$totalPosts</td>
+              </tr> 
+              </table>
+              </div>";  
+     ?>
+    
          </div>
          <br>
       </div>
@@ -139,7 +145,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
               <form action='blogmain.php' method='POST'>
               <textarea class='w3-input w3-border' style='resize: none' onkeyup='handleHeight(this,50)'' maxlength='200' name='postContent'></textarea>
               <button type='submit' class='w3-button w3-theme w3-margin' name='post'><i class='fa fa-pencil'></i> Post</button> 
-            </form>";
+              </form>";
             }
             else
               echo $blockMessage;
@@ -152,7 +158,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
       if($userName==$admin)
       $blogsToShow=mysqli_query($con,"SELECT * FROM `blogs` WHERE 1 ORDER BY `time` DESC");
       else
-      $blogsToShow=mysqli_query($con,"SELECT * FROM `blogs` WHERE `blogger` IN (SELECT `following` FROM `follow` WHERE `follower`='$userName') OR `blogger`='$userName' ORDER BY `time` DESC");
+      $blogsToShow=mysqli_query($con,"SELECT * FROM `blogs` WHERE `blogger` IN (SELECT `following` FROM `follow` WHERE `follower`='$userName') OR `blogger`='$userName' OR `blogger`='$admin' ORDER BY `time` DESC");
 
       while($blog=mysqli_fetch_assoc($blogsToShow))
       {
